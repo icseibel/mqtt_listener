@@ -10,3 +10,11 @@ class MongoConnection():
     def post(self, collection_name, post_content):
         collection = self.db[collection_name]
         return collection.insert_one(post_content).inserted_id
+
+    def get(self, collection_name, query):
+        collection = self.db[collection_name]
+        return collection.find(query)
+
+    def get_aggregated(self, collection_name, query):
+        collection = self.db[collection_name]
+        return collection.aggregate(query)

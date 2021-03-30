@@ -1,8 +1,11 @@
-from mqtt_listener import MqttListener
+from datetime import timedelta
 import os
 import threading
+import datetime
+from flask import Flask, jsonify
 
-from flask import Flask
+from mqtt_listener import MqttListener
+from mongo_util import MongoConnection
 
 
 app = Flask(__name__)
@@ -11,6 +14,51 @@ app = Flask(__name__)
 @app.route("/")
 def index():
     return "<h1>Hello World</hi>"
+
+@app.route("/groupedbyhour")
+def get_grouped_by_hour():
+    query = [{
+    '$match': {
+        "datetime": {
+            '$gt': datetime.datetime.utcnow() - timedelta(hours=24)
+        }
+    }
+    },
+    {
+        '$group': {
+            '_id': {
+                'ano': {
+                    '$year': '$datetime'
+                }, 
+                'mes': {
+                    '$month': '$datetime'
+                }, 
+                'dia': {
+                    '$dayOfMonth': '$datetime'
+                }, 
+                'hora': {
+                    '$hour': '$datetime'
+                }
+            }, 
+            'media': {
+                '$avg': '$value'
+            }, 
+            'max': {
+                '$max': '$value'
+            }, 
+            'min': {
+                '$min': '$value'
+            }
+        }
+    }, {
+        '$sort': {
+            '_id': 1
+        }
+    }
+]
+    client = MongoConnection()    
+    result = list(client.get_aggregated(collection_name='temp',query=query))
+    return jsonify(result)
 
 def call_script():
     mqtt_listener = MqttListener()
@@ -21,5 +69,3 @@ if __name__ == "__main__":
     th = threading.Thread(target=call_script, name="Thread-mqtt")
     th.start()
     app.run(host='0.0.0.0', port=port)
-
-    
