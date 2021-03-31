@@ -73,6 +73,6 @@ def call_script():
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
-    #th = threading.Thread(target=call_script, name="Thread-mqtt")
-    #th.start()
+    th = threading.Thread(target=call_script, name="Thread-mqtt")
+    th.start()
     app.run(host='0.0.0.0', port=port)
