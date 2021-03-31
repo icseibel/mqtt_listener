@@ -18,3 +18,9 @@ class MongoConnection():
     def get_aggregated(self, collection_name, query):
         collection = self.db[collection_name]
         return collection.aggregate(query)
+
+    def get_one(self, collection_name, sort_field, sort=-1):
+        collection = self.db[collection_name]
+        #db.temp.find().sort({datetime:-1}).limit(1);        
+        return collection.find().sort(sort_field, sort).limit(1)
+        
