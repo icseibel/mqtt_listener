@@ -38,6 +38,14 @@ def last_temp():
     final= {"datetime":  result[0]['datetime'].strftime("%m/%d/%Y, %H:%M:%S"), "value": result[0]['value']}
     return jsonify(final)
     
+@app.route("/lasthumidity", methods=['GET'])
+@cross_origin()
+def last_temp():
+    client = MongoConnection()    
+    result = list(client.get_one(collection_name='humidity', sort_field='datetime'))
+    final= {"datetime":  result[0]['datetime'].strftime("%m/%d/%Y, %H:%M:%S"), "value": result[0]['value']}
+    return jsonify(final)
+
 @app.route("/groupedbyhour", methods=['GET'])
 @cross_origin()
 def get_grouped_by_hour():
