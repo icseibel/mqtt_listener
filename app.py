@@ -40,7 +40,7 @@ def last_temp():
     
 @app.route("/lasthumidity", methods=['GET'])
 @cross_origin()
-def last_temp():
+def last_humidity():
     client = MongoConnection()    
     result = list(client.get_one(collection_name='humidity', sort_field='datetime'))
     final= {"datetime":  result[0]['datetime'].strftime("%m/%d/%Y, %H:%M:%S"), "value": result[0]['value']}
