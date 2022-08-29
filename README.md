@@ -4,4 +4,4 @@ Database
 
 # Current Features
 
-- Listen dht11 msgs with temperature and humidity.
+- Listen dht11 msgs with temperature and humidity...
